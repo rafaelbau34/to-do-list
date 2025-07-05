@@ -1,12 +1,12 @@
 import { Todos } from "./class";
 
 class Projects {
-  static projectLIst = [];
+  static projectList = [];
 
-  constructor(name = "Project") {
+  constructor(name) {
     this.name = name;
     this.todos = new Array();
-    Projects.projectLIst.push(this);
+    Projects.projectList.push(this);
   }
 
   addTodo(title, description, dueDate, priority) {
