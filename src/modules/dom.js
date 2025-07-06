@@ -1,3 +1,4 @@
+import { saveProjectsToStorage } from "..";
 import { Projects } from "./projects";
 export let currentProject = null;
 
@@ -52,6 +53,7 @@ export function addToDo(todoList = []) {
     toggleBtn.textContent = "Toggle";
     toggleBtn.addEventListener("click", () => {
       todo.toggleComplete();
+      saveProjectsToStorage();
       addToDo(todoList);
     });
 
@@ -85,6 +87,7 @@ document.getElementById("form-data").addEventListener("submit", function (e) {
 
   const newProject = new Projects(neim);
   addProject();
+  saveProjectsToStorage();
   e.target.reset();
 });
 
@@ -113,6 +116,7 @@ document
     if (currentProject) {
       currentProject.addTodo(title, desc, dueDate, priority);
       addToDo(currentProject.todos);
+      saveProjectsToStorage();
       e.target.reset();
     } else {
       alert("Please select a project first");
