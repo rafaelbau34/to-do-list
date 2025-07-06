@@ -4,12 +4,12 @@ class Todos {
   constructor(title, description, dueDate, priority) {
     this.title = title;
     this.description = description;
-    const date = dueDate.split("/");
-    this.dueDate = format(
-      new Date(date[0], date[1] - 1, date[2], "MM/dd/yyyy")
-    );
-    const priorities = [Low, Medium, High];
-    this.priority = priorities[priority];
+    const parsedDate = new Date(dueDate);
+    this.dueDate = isNaN(parsedDate)
+      ? "Invalid Date"
+      : format(parsedDate, "MM dd, yyyy");
+
+    this.priority = priority;
     this.isComplete = false;
   }
 

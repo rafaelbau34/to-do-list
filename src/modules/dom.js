@@ -1,4 +1,5 @@
 import { Projects } from "./projects";
+export let currentProject = null;
 
 export function addProject() {
   const projects = document.getElementById("projects");
@@ -7,16 +8,62 @@ export function addProject() {
     const div = document.createElement("div");
     div.classList.add("project-list");
 
-    const title = document.createElement("h3");
-    title.textContent = project.name;
+    const button = document.createElement("button");
+    button.textContent = project.name;
+    button.classList.add("project-btn");
+    button.addEventListener("click", () => {
+      currentProject = project;
+      addToDo(project.todos);
+    });
 
-    div.appendChild(title);
+    div.addEventListener("click", () => {
+      currentProject = project;
+      addToDo(project.todos);
+    });
+
+    div.appendChild(button);
     projects.appendChild(div);
   });
 }
 
-export function addToDo() {
+export function addToDo(todoList = []) {
   const todos = document.getElementById("todos");
+  todos.innerHTML = "";
+  todoList.forEach((todo, index) => {
+    const card = document.createElement("div");
+    card.classList.add("todo-card");
+
+    const title = document.createElement("h3");
+    title.textContent = todo.title;
+
+    const description = document.createElement("p");
+    description.textContent = todo.description;
+
+    const dueDate = document.createElement("p");
+    dueDate.textContent = `Due: ${todo.dueDate}`;
+
+    const priority = document.createElement("p");
+    priority.textContent = `Priority: ${todo.priority}`;
+
+    const status = document.createElement("p");
+    status.textContent = todo.isComplete ? "Complete" : "Incomplete";
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.textContent = "Toggle";
+    toggleBtn.addEventListener("click", () => {
+      todo.toggleComplete();
+      addToDo(todoList);
+    });
+
+    card.appendChild(title);
+    card.appendChild(description);
+    card.appendChild(dueDate);
+    card.appendChild(priority);
+    card.appendChild(status);
+    card.appendChild(toggleBtn);
+
+    todos.appendChild(card);
+  });
 }
 
 const projectForm = document.querySelector(".project-form");
@@ -57,6 +104,19 @@ document
   .getElementById("todo-form-get")
   .addEventListener("submit", function (e) {
     e.preventDefault();
+
+    const title = e.target.title.value;
+    const desc = e.target.desc.value;
+    const dueDate = e.target.dueDate.value;
+    const priority = e.target.priority.value;
+
+    if (currentProject) {
+      currentProject.addTodo(title, desc, dueDate, priority);
+      addToDo(currentProject.todos);
+      e.target.reset();
+    } else {
+      alert("Please select a project first");
+    }
   });
 
-export default { projectForm, addProjectBtn };
+//export default { projectForm, addProjectBtn };
