@@ -1,9 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Didact+Gothic&display=swap");
+
 body {
   background-color: lightgoldenrodyellow;
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: "Didact Gothic", sans-serif;
 }
 
 .flex-container {
@@ -112,19 +114,56 @@ body {
   margin-top: 15px;
 }
 
-#addProjectBtn {
+/* #addProjectBtn {
   width: 120px;
   border-radius: 5px;
   cursor: pointer;
-}
+  margin-bottom: 20px;
+  background: none;
+  border: none;
+  font-size: 20px;
+} */
 
 .main-container {
   flex: 1;
+  margin-left: 30px;
+  margin-top: 15px;
 }
 
-.todos {
+#todos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   overflow: auto;
   grid-auto-rows: 250px;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+#addProjectBtn,
+.project-list button {
+  margin-bottom: 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  background: none;
+  font-size: 20px;
+}
+
+#addProjectBtn {
+  font-weight: bold;
+}
+
+#addProjectBtn:hover {
+  color: white;
+}
+
+.project-list button:hover {
+  color: white;
+}
+
+.todo-card {
+  background-color: white;
+  text-align: start;
+  padding-left: 40px;
+  border-radius: 20px;
 }

@@ -30,7 +30,7 @@ export function addProject() {
 export function addToDo(todoList = []) {
   const todos = document.getElementById("todos");
   todos.innerHTML = "";
-  todoList.forEach((todo, index) => {
+  todoList.forEach((todo) => {
     const card = document.createElement("div");
     card.classList.add("todo-card");
 
@@ -57,12 +57,39 @@ export function addToDo(todoList = []) {
       addToDo(todoList);
     });
 
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "X";
+    deleteBtn.addEventListener("click", () => {
+      const index = currentProject.todos.indexOf(todo);
+      if (index > -1) {
+        currentProject.todos.splice(index, 1);
+        saveProjectsToStorage();
+        addToDo(currentProject.todos);
+      }
+    });
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", () => {
+      document.querySelector(".todoFormContainer").style.display = "flex";
+      const form = document.getElementById("todo-form-get");
+      form.title.value = todo.title;
+      form.desc.value = todo.description;
+      form.dueDate.value = todo.value;
+      form.priority.value = todo.priority;
+
+      form.dataset.editing = "true";
+      form.dataset.todoIndex = currentProject.todos.indexOf(todo);
+    });
+
     card.appendChild(title);
     card.appendChild(description);
     card.appendChild(dueDate);
     card.appendChild(priority);
     card.appendChild(status);
     card.appendChild(toggleBtn);
+    card.appendChild(deleteBtn);
+    card.appendChild(editBtn);
 
     todos.appendChild(card);
   });
@@ -131,12 +158,28 @@ document
     const dueDate = e.target.dueDate.value;
     const priority = e.target.priority.value;
 
-    if (currentProject) {
-      currentProject.addTodo(title, desc, dueDate, priority);
-      addToDo(currentProject.todos);
-      saveProjectsToStorage();
-      e.target.reset();
-    } else {
+    if (!currentProject) {
       alert("Please select a project first");
+      return;
     }
+
+    const isEditing = e.target.dataset.editing === "true";
+    if (isEditing) {
+      const index = parseInt(e.target.dataset.todoIndex);
+      const todo = currentProject.todos[index];
+      todo.title = title;
+      todo.description = desc;
+      todo.dueDate = dueDate;
+      todo.priority = priority;
+
+      e.target.dataset.editing = "false";
+      e.target.removeAttribute("data-todo-index");
+    } else {
+      currentProject.addTodo(title, desc, dueDate, priority);
+    }
+
+    saveProjectsToStorage();
+    addToDo(currentProject.todos);
+    e.target.reset();
+    document.querySelector(".todoFormContainer").style.display = "none";
   });
