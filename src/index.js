@@ -1,15 +1,13 @@
 import "./style.css";
 import { Todos } from "./modules/class.js";
 import { Projects } from "./modules/projects.js";
-import { addProject } from "./modules/dom.js";
-
-export function createDefaultProject() {
-  if (!localStorage.getItem("projects")) {
-    const defaultProject = new Projects("Project");
-    defaultProject.addTodo("Buy a lambo", "A gray one", "2025-07-07", "High");
-    saveProjectsToStorage();
-  }
-}
+import {
+  addProject,
+  addToDo,
+  setCurrentProject,
+  getCurrentProject,
+  createDefaultProject,
+} from "./modules/dom.js";
 
 export function saveProjectsToStorage() {
   const data = Projects.projectList.map((project) => ({
@@ -44,11 +42,19 @@ function loadProjects() {
       loadedProject.todos.push(newTodo);
     });
   });
+
+  if (Projects.projectList.length > 0) {
+    setCurrentProject(Projects.projectList[0]);
+  }
 }
 
 function init() {
   loadProjects();
   createDefaultProject();
   addProject();
+  const selected = getCurrentProject();
+  if (selected) {
+    addToDo(selected.todos);
+  }
 }
 init();

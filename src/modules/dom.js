@@ -68,6 +68,24 @@ export function addToDo(todoList = []) {
   });
 }
 
+export function createDefaultProject() {
+  if (!localStorage.getItem("projects")) {
+    const defaultProject = new Projects("Project");
+    defaultProject.addTodo("Buy a lambo", "A gray one", "2025-07-07", "High");
+    setCurrentProject(defaultProject);
+
+    saveProjectsToStorage();
+  }
+}
+
+export function setCurrentProject(project) {
+  currentProject = project;
+}
+
+export function getCurrentProject() {
+  return currentProject;
+}
+
 const projectForm = document.querySelector(".project-form");
 const addProjectBtn = document.getElementById("addProjectBtn");
 const closeBtn = document.querySelector(".closeBtn");
@@ -122,5 +140,3 @@ document
       alert("Please select a project first");
     }
   });
-
-//export default { projectForm, addProjectBtn };
