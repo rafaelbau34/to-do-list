@@ -167,3 +167,17 @@ body {
   padding-left: 40px;
   border-radius: 20px;
 }
+
+.todo-card button:nth-of-type(2) {
+  color: black;
+}
+
+.todo-card button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  margin-right: 12px;
+  cursor: pointer;
+  color: red;
+  width: 30px;
+}

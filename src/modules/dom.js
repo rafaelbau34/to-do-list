@@ -17,12 +17,35 @@ export function addProject() {
       addToDo(project.todos);
     });
 
-    div.addEventListener("click", () => {
-      currentProject = project;
-      addToDo(project.todos);
+    const delProjBtn = document.createElement("button");
+    delProjBtn.textContent = "🗑️";
+    delProjBtn.classList.add("delProjBtn");
+    delProjBtn.addEventListener("click", () => {
+      if (index > -1) {
+        Projects.projectList.splice(index, 1);
+        if (Projects.projectList.length > 0) {
+          const newIndex = index > 0 ? index - 1 : 0;
+          currentProject = Projects.projectList[newIndex];
+        } else {
+          currentProject = null;
+        }
+      }
+      saveProjectsToStorage();
+      addProject();
+      if (currentProject) {
+        addToDo(currentProject.todos);
+      } else {
+        document.getElementById("todos").innerHTML = "";
+      }
     });
 
+    // div.addEventListener("click", () => {
+    //   currentProject = project;
+    //   addToDo(project.todos);
+    // });
+
     div.appendChild(button);
+    div.appendChild(delProjBtn);
     projects.appendChild(div);
   });
 }
@@ -50,7 +73,8 @@ export function addToDo(todoList = []) {
     status.textContent = todo.isComplete ? "Complete" : "Incomplete";
 
     const toggleBtn = document.createElement("button");
-    toggleBtn.textContent = "Toggle";
+    toggleBtn.textContent = todo.isComplete ? "✔️" : "❌";
+    toggleBtn.style.color = todo.isComplete ? "green" : "red";
     toggleBtn.addEventListener("click", () => {
       todo.toggleComplete();
       saveProjectsToStorage();
@@ -58,7 +82,7 @@ export function addToDo(todoList = []) {
     });
 
     const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "X";
+    deleteBtn.textContent = "🗑️";
     deleteBtn.addEventListener("click", () => {
       const index = currentProject.todos.indexOf(todo);
       if (index > -1) {
@@ -69,7 +93,7 @@ export function addToDo(todoList = []) {
     });
 
     const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit";
+    editBtn.textContent = "✏️";
     editBtn.addEventListener("click", () => {
       document.querySelector(".todoFormContainer").style.display = "flex";
       const form = document.getElementById("todo-form-get");
@@ -88,8 +112,8 @@ export function addToDo(todoList = []) {
     card.appendChild(priority);
     card.appendChild(status);
     card.appendChild(toggleBtn);
-    card.appendChild(deleteBtn);
     card.appendChild(editBtn);
+    card.appendChild(deleteBtn);
 
     todos.appendChild(card);
   });
@@ -131,9 +155,15 @@ document.getElementById("form-data").addEventListener("submit", function (e) {
   const neim = e.target.title.value;
 
   const newProject = new Projects(neim);
-  addProject();
+
+  currentProject = newProject;
+
   saveProjectsToStorage();
+  addProject();
+  addToDo(currentProject.todos);
+
   e.target.reset();
+  projectForm.style.display = "none";
 });
 
 const todoBtn = document.getElementById("todoBtn");
@@ -167,9 +197,11 @@ document
     if (isEditing) {
       const index = parseInt(e.target.dataset.todoIndex);
       const todo = currentProject.todos[index];
+
+      if (dueDate) todo.dueDate = dueDate;
+
       todo.title = title;
       todo.description = desc;
-      todo.dueDate = dueDate;
       todo.priority = priority;
 
       e.target.dataset.editing = "false";

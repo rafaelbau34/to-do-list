@@ -7,7 +7,7 @@ class Todos {
     const parsedDate = new Date(dueDate);
     this.dueDate = isNaN(parsedDate)
       ? "Invalid Date"
-      : format(parsedDate, "MM dd, yyyy");
+      : format(parsedDate, "MM-dd-yyyy");
 
     this.priority = priority;
     this.isComplete = false;
